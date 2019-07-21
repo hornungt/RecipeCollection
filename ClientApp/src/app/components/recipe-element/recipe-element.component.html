@@ -1,0 +1,17 @@
+<div class="recipe-row">
+  <a class="recipe-element" (click)="viewRecipe()">
+    {{ recipeName }}
+  </a>
+
+  <button mat-icon-button class="recipe-button" type="button" (click)="editRecipe()">
+    <i class="material-icons">
+      edit
+    </i>
+  </button>
+
+  <button mat-icon-button class="recipe-button" type="button" (click)="deleteRecipe()">
+    <i class="material-icons">
+      delete_forever
+    </i>
+  </button>
+</div>

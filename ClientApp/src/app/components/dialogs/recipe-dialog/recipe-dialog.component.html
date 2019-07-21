@@ -1,0 +1,37 @@
+<div class="dialog">
+
+  <h2 mat-dialog-title> {{ dialogTitle }} </h2>
+
+  <form (ngSubmit)="submit()" #addDialog="ngForm">
+
+    <mat-dialog-content>
+      <mat-form-field appearance="outline">
+        <mat-label>Recipe name</mat-label>
+        <input matInput type="text" [(ngModel)]="name" [ngModelOptions]="{standalone: true}" placeholder="Recipe name..." required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>URL</mat-label>
+        <input matInput type="text" [(ngModel)]="url" placeholder="URL" [formControl]="urlValidator" required />
+        <mat-error *ngIf="urlValidator.invalid">Invalid url</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tag</mat-label>
+        <input matInput [(ngModel)]="nextTag" [ngModelOptions]="{standalone: true}" type="text" placeholder="Tag" />
+      </mat-form-field>
+
+      <button mat-button class="add-tag-button" type="button" (click)="pushNextTag()">Add tag</button>
+
+      <app-recipe-tag *ngFor="let tag of tags" [tag]="tag" (removeTag)="removeTag($event)"></app-recipe-tag>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+      <button mat-button type="submit" [disabled]="!name || urlValidator.invalid || nextTag">Create</button>
+      <button mat-button (click)="cancel()">Cancel</button>
+    </mat-dialog-actions>
+
+  </form>
+
+</div>

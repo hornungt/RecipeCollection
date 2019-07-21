@@ -1,0 +1,32 @@
+<div class="home">
+
+  <div class="centered">
+
+    <div class="button-wrapper">
+      <button mat-icon-button class="add-button" type="button" (click)="openAddDialog()">
+        <i class="material-icons" inline="true">
+          add_box
+        </i>
+      </button>
+    </div>
+
+    <div style="margin: 3vh 3vw 3vh 3vw">
+
+      <app-search (enter)="search($event)"></app-search>
+
+      <div class="result-list" *ngIf="recipes">
+        <ul>
+          <li *ngFor="let recipe of recipes">
+            <app-recipe-element [name]="recipe.name" [path]="recipe.path"
+                                (emitView)="openRecipe($event)"
+                                (emitEdit)="openEditDialog($event)"
+                                (emitDelete)="openDeleteDialog($event)"></app-recipe-element>
+          </li>
+        </ul>
+      </div>
+      
+    </div>
+
+  </div>
+
+</div>

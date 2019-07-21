@@ -1,0 +1,5 @@
+CREATE TABLE Recipes (
+	Name VARCHAR(255) Primary Key NOT NULL,
+    Url VARCHAR(255) NOT NULL,
+    Path VARCHAR(260) NOT NULL
+    )

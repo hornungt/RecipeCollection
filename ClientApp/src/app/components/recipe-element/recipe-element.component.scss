@@ -1,0 +1,31 @@
+.recipe-element {
+  margin-bottom: 2vh;
+  margin-left: 1vh;
+  float: left;
+}
+
+a {
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+.recipe-button {
+  float: right;
+  border: 2px solid lightgrey;
+  margin-top: -1.5vh;
+  margin-right: 0.75vw;
+}
+
+.recipe-row {
+  height: 7vh;
+  width: 100%;
+  margin: 0.4vh 0;
+}
+
+i {
+  margin-top: -0.9vh;
+}

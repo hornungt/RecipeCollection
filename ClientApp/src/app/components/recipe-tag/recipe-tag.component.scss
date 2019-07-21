@@ -1,0 +1,29 @@
+.tag {
+  height: 1.5vw;
+  max-height: 1.5vw;
+  min-width: 6vw;
+  margin: 1vh 1.5vw 1vh 0.5vw;
+  background-color: #2b7cff;
+  border-radius: 5px;
+  float: left;
+  text-align: center;
+}
+
+.tagBorder {
+  display: inline-block;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+}
+
+.tagBorder:hover {
+  border: 2px solid grey;
+}
+
+i {
+  border-radius: 20px;
+}
+
+i:hover {
+  background-color: grey;
+}
+
