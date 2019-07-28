@@ -92,24 +92,26 @@ namespace RecipeApp.Controllers
                 return BadRequest();
             }
             // transaction so that sql row is deleted and file is deleted from folder structure
-            try
+            await Task.Run( () =>
             {
-                using (var tx = new TransactionScope())
+                try
                 {
-                    _dbManager.DeleteRecipe(name, true);
-                    _fileManager.DeleteFile(filePath);
+                    using (var tx = new TransactionScope())
+                    {
+                        _dbManager.DeleteRecipe(name, true);
+                        _fileManager.DeleteFile(filePath);
 
-                    tx.Complete();
+                        tx.Complete();
+                    }
                 }
-            }
-            catch (TransactionAbortedException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+                catch (TransactionAbortedException e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            });
             return Ok();
         }
 
-        //TODO: Test editing
         [HttpPut]
         public async Task<IActionResult> EditRecipe([FromBody] Recipe[] recipes)
         {

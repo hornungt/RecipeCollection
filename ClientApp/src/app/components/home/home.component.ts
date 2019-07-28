@@ -5,18 +5,24 @@ import { AddRecipeDialogComponent } from '../dialogs/add-recipe-dialog/add-recip
 import { Recipe } from "../../model/recipe";
 import { EditRecipeDialogComponent } from '../dialogs/edit-recipe-dialog/edit-recipe-dialog.component';
 import { DeleteRecipeDialogComponent } from '../dialogs/delete-recipe-dialog/delete-recipe-dialog.component';
+import { InstructionsDialogComponent } from "../dialogs/instructions-dialog/instructions-dialog.component";
+import { UploadDialogComponent } from '../dialogs/upload-dialog/upload-dialog.component';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss']
 })
 
 export class HomeComponent {
 
   public recipes: Array<Recipe>;
 
-  constructor(private service: RecipeService, private matDialog: MatDialog) {  }
+  constructor(private service: RecipeService, private matDialog: MatDialog) { }
+
+  showInstructions(): void {
+    const dialogRef = this.matDialog.open(InstructionsDialogComponent);
+  }
 
   openRecipe(filePath): void {
     this.service.getRecipeFile(filePath).subscribe(res => {
@@ -85,4 +91,10 @@ export class HomeComponent {
     }
   }
 
+  openUploadDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.autoFocus = true;
+    const dialogRef = this.matDialog.open(UploadDialogComponent, dialogConfig);
+
+  }
 }

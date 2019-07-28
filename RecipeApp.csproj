@@ -40,8 +40,12 @@
     <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\delete-recipe-dialog\delete-recipe-dialog.component.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\edit-recipe-dialog\edit-recipe-dialog.component.spec.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\edit-recipe-dialog\edit-recipe-dialog.component.ts" />
+    <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\instructions-dialog\instructions-dialog.component.spec.ts" />
+    <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\instructions-dialog\instructions-dialog.component.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\recipe-dialog\recipe-dialog.component.spec.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\recipe-dialog\recipe-dialog.component.ts" />
+    <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\upload-dialog\upload-dialog.component.spec.ts" />
+    <TypeScriptCompile Remove="ClientApp\src\app\components\dialogs\upload-dialog\upload-dialog.component.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\recipe-tag\recipe-tag.component.spec.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\recipe-tag\recipe-tag.component.ts" />
     <TypeScriptCompile Remove="ClientApp\src\app\components\search\search.component.spec.ts" />

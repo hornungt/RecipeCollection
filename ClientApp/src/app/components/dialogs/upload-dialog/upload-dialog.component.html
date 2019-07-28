@@ -1,0 +1,44 @@
+<div class="dialog">
+
+  <h2 mat-dialog-title> Upload a recipe </h2>
+
+  <form (ngSubmit)="submit()" #addDialog="ngForm">
+
+    <mat-dialog-content>
+
+      <div class="centered upload-wrapper">
+        <input #file type="file" [hidden]="true" accept="application/pdf" (change)="onFileSelected($event)">
+        <button mat-button #upload type="button" class="upload-button" (click)="file.click()">
+          <i class="material-icons">
+            cloud_upload
+          </i>
+        </button>
+        
+        <p class="file-name-display" id="file-name"></p>
+
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Recipe name</mat-label>
+        <input matInput type="text" placeholder="Recipe name" id="name-input" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Tag</mat-label>
+        <input matInput [(ngModel)]="nextTag" [ngModelOptions]="{standalone: true}" type="text" placeholder="Tag" />
+      </mat-form-field>
+
+      <button mat-button class="add-tag-button" type="button" (click)="pushNextTag()">Add tag</button>
+
+      <app-recipe-tag *ngFor="let tag of tags" [tag]="tag" (removeTag)="removeTag($event)"></app-recipe-tag>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+      <button mat-button type="submit" [disabled]="!name || urlValidator.invalid || nextTag">Create</button>
+      <button mat-button (click)="cancel()">Cancel</button>
+    </mat-dialog-actions>
+
+  </form>
+
+</div>

@@ -18,6 +18,8 @@ import { RecipeDialogComponent } from "./components/dialogs/recipe-dialog/recipe
 import { AddRecipeDialogComponent } from "./components/dialogs/add-recipe-dialog/add-recipe-dialog.component";
 import { EditRecipeDialogComponent } from "./components/dialogs/edit-recipe-dialog/edit-recipe-dialog.component";
 import { DeleteRecipeDialogComponent } from "./components/dialogs/delete-recipe-dialog/delete-recipe-dialog.component";
+import { InstructionsDialogComponent } from "./components/dialogs/instructions-dialog/instructions-dialog.component";
+import { UploadDialogComponent } from "./components/dialogs/upload-dialog/upload-dialog.component";
 
 import { RecipeService } from "./services/recipe.service";
 
@@ -31,12 +33,16 @@ import { RecipeService } from "./services/recipe.service";
     AddRecipeDialogComponent,
     EditRecipeDialogComponent,
     DeleteRecipeDialogComponent,
-    RecipeTagComponent
+    RecipeTagComponent,
+    InstructionsDialogComponent,
+    UploadDialogComponent
   ],
   entryComponents: [
     AddRecipeDialogComponent,
     EditRecipeDialogComponent,
-    DeleteRecipeDialogComponent
+    DeleteRecipeDialogComponent,
+    InstructionsDialogComponent,
+    UploadDialogComponent
   ],
   imports: [
     BrowserModule,
