@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecipeApp.Abstract.Managers;
+using RecipeApp.Abstract.Repositories;
 using RecipeApp.Abstract.Models.Db;
 using RecipeApp.Managers;
+using RecipeApp.Repositories;
 using RecipeApp.Models.Db;
 
 namespace RecipeApp
@@ -25,8 +27,9 @@ namespace RecipeApp
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddScoped<IFileSystemManager, FileSystemManager>();
-            services.AddScoped<ISqlDbManager, SqlDbManager>();
+            services.AddScoped<IFileSystemRepository, FileSystemRepository>();
+            services.AddScoped<ISqlDbRepository, SqlDbRepository>();
+            services.AddScoped<IRecipeManager, RecipeManager>();
             services.Add(new ServiceDescriptor(typeof(IDbContext), new DbContext(Configuration.GetConnectionString("DefaultConnection"))));
 
             // In production, the Angular files will be served from this directory

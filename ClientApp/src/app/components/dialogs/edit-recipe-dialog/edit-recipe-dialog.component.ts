@@ -17,14 +17,17 @@ export class EditRecipeDialogComponent extends RecipeDialogComponent {
     super(dialogRef);
     this.name = this.dialogTitle = data["name"];
     this.tags = data["tags"];
+    this.tags = this.tags.filter((val) => {
+      return val != null && val.trim().length > 0
+    });
     this.url = data["url"];
 
     this.original = data as Recipe;
   }
 
   public submit() {
-    let newRecipe = { name: this.name, path: null, url: this.url, tags: this.tags };
-    if (this.urlValidator.valid && !this.recipeAreDeepEqual(this.original, newRecipe)) {
+    let newRecipe = { name: this.name, path: null, url: this.url, tags: this.tags, file: null };
+    if ((this.urlValidator.valid || this.original.url.length == 0) && !this.recipeAreDeepEqual(this.original, newRecipe)) {
       this.dialogRef.close(newRecipe);
     }
   }
@@ -45,5 +48,23 @@ export class EditRecipeDialogComponent extends RecipeDialogComponent {
       if (array1[i] !== array2[i]) return false;
     }
     return true;
+  }
+
+  public canSubmit(): boolean {
+    if (this.original.url.length != 0) {
+      return super.canSubmit()
+    }
+
+    let valid: boolean = false;
+    if (this.name != null) {
+      valid = this.name.length > 0;
+      if (this.nextTag != null) {
+        valid = valid && this.nextTag.length == 0 && this.name.length > 0;
+      }
+      return valid;
+
+    }
+    return false;
+
   }
 }

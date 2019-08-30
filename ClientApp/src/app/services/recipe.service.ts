@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators'
 import { Recipe } from "../model/recipe";
 
 @Injectable()
@@ -30,5 +29,12 @@ export class RecipeService {
   public editRecipe(oldRecipe: Recipe, newRecipe: Recipe) {
     let recipes: Recipe[] = [oldRecipe, newRecipe];
     return this.http.put(`api/recipes`, recipes);
+  }
+
+  public uploadLocalRecipe(recipe: Recipe, file: File) {
+    const formData: FormData = new FormData();
+    formData.append('recipe', JSON.stringify(recipe));
+    formData.append('upload-recipe', file);
+    return this.http.post(`api/recipes/upload-local`, formData);
   }
 }

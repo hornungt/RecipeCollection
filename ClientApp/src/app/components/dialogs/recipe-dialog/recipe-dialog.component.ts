@@ -50,4 +50,16 @@ export class RecipeDialogComponent {
   public cancel() {
     this.dialogRef.close();
   }
+
+  public canSubmit(): boolean {
+    let valid: boolean = false;
+    if (this.name != null) {
+      valid = this.name.length > 0 && this.urlValidator.valid;
+      if (this.nextTag != null) {
+        valid = valid && this.nextTag.length == 0;
+      }
+      // else -> this.nextTag has to be null which is fine, so valid can stay true
+    }
+    return valid;
+  }
 }

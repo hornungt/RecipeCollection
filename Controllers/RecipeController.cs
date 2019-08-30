@@ -3,62 +3,48 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecipeApp.Abstract.Managers;
 using RecipeApp.Models;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Newtonsoft.Json;
 
 namespace RecipeApp.Controllers
 {
     [Route("api/recipes")]
     public class RecipeController : Controller
     {
-        private readonly IFileSystemManager _fileManager;
-        private readonly ISqlDbManager _dbManager;
-        public RecipeController(IFileSystemManager fileManager, ISqlDbManager dbManager)
+        private readonly IRecipeManager _recipeManager;
+        public RecipeController(IRecipeManager recipeManager)
         {
-            //need to get injected services in here for making actual db requests
-            _fileManager = fileManager;
-            _dbManager = dbManager;
+            _recipeManager = recipeManager;
         }
 
         [HttpGet]
-        public IEnumerable<Recipe> GetRecipes(string query)
+        public async Task<IEnumerable<Recipe>> GetRecipes(string query)
         {
-            IEnumerable<Recipe> recipes;
-            if (string.IsNullOrWhiteSpace(query))
+            // search for all recipes when no query is specified
+            try
             {
-                //call manager to get all recipes entries from sql db
-                recipes = _dbManager.GetAllRecipes();
-            }
-            else
-            {
-                var byName = _dbManager.GetRecipesByName(query);
-                var byTag = _dbManager.GetRecipesByTag(query);
-
-                if (byName == null || byName.Count() == 0)
+                if (string.IsNullOrWhiteSpace(query))
                 {
-                    recipes = byTag;
-                }
-                else if (byTag == null || byTag.Count() == 0)
-                {
-                    recipes = byName;
+                    return await _recipeManager.GetAllRecipes();
                 }
                 else
                 {
-                    recipes = byName.Union(byTag);
+                    return await _recipeManager.GetRecipesByNameOrTag(query);
                 }
             }
-            return recipes;
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return new List<Recipe>();
         }
 
         [HttpGet("{*filePath}")]
         public async Task<IActionResult> GetFile(string filePath)
         {
-            var file = await _fileManager.GetFile(filePath);
+            var file = await _recipeManager.GetFile(filePath);
             return File(file, "application/pdf");
         }
 
@@ -67,16 +53,9 @@ namespace RecipeApp.Controllers
         {
             try
             {
-                using (var tx = new TransactionScope())
-                {
-                    //create pdf, get file path to pdf, and create sql entry
-                    var recipeWithPath = _fileManager.GenerateNewPDF(recipe);
-                    await _dbManager.AddRecipe(recipeWithPath, true);
-
-                    tx.Complete();
-                }
+                await _recipeManager.GenerateRecipe(recipe);
             }
-            catch (TransactionAbortedException e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
@@ -86,29 +65,19 @@ namespace RecipeApp.Controllers
         [HttpDelete("{name}/{*filePath}")]
         public async Task<IActionResult> DeleteRecipe([FromRoute] string name, [FromRoute] string filePath)
         {
-            var temp = (Directory.GetCurrentDirectory() + "\\pdfs\\").Replace("\\", "/");
             if (name == null || filePath == null || !filePath.StartsWith((Directory.GetCurrentDirectory() + "\\pdfs\\").Replace("\\", "/")))
             {
                 return BadRequest();
             }
             // transaction so that sql row is deleted and file is deleted from folder structure
-            await Task.Run( () =>
+            try
             {
-                try
-                {
-                    using (var tx = new TransactionScope())
-                    {
-                        _dbManager.DeleteRecipe(name, true);
-                        _fileManager.DeleteFile(filePath);
-
-                        tx.Complete();
-                    }
-                }
-                catch (TransactionAbortedException e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            });
+                await _recipeManager.DeleteRecipe(name, filePath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
             return Ok();
         }
 
@@ -120,22 +89,38 @@ namespace RecipeApp.Controllers
             var oldRecipe = recipes[0];
             var newRecipe = recipes[1];
 
+            // can't have an empty new url if the old url is not empty
+            if (string.IsNullOrEmpty(newRecipe.Url) && !string.IsNullOrEmpty(oldRecipe.Url))
+            {
+                return BadRequest();
+            }
+
             try
             {
-                using (var txn = new TransactionScope())
-                {
-                    _dbManager.DeleteRecipe(oldRecipe.Name, true);
-                    _fileManager.DeleteFile(oldRecipe.Path);
-
-                    var newRecipeWithPath =_fileManager.GenerateNewPDF(newRecipe);
-                    await _dbManager.AddRecipe(newRecipeWithPath, true);
-
-                    txn.Complete();
-                }
+                await _recipeManager.OverwriteRecipe(oldRecipe, newRecipe);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.GetType().FullName + ": " + e.Message);
+                Console.WriteLine( e.Message);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("upload-local"), DisableRequestSizeLimit]
+        public async Task<IActionResult> UploadLocalRecipe()
+        {
+            try
+            {
+                var file = Response.HttpContext.Request.Form.Files[0];
+                var recipeJson = Response.HttpContext.Request.Form.Single((kvp) => kvp.Key.Equals("recipe")).Value;
+                var recipe = JsonConvert.DeserializeObject(recipeJson, typeof(Recipe)) as Recipe;
+
+                await _recipeManager.WriteExistingRecipe(recipe, file);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.GetType() + ": invalid recipe upload request");
             }
 
             return Ok();

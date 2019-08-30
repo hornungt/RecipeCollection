@@ -24,10 +24,7 @@ li {
 }
 
 .button-wrapper {
-  margin: auto;
-  clear: left;
-  width: 100%;
-  padding-left: 45%
+  float: left;
 }
 
 .result-list {
@@ -43,4 +40,7 @@ li {
 
 i {
   margin-top: -0.9vh;
+}
+.button-menu {
+  margin-left: 21vw
 }

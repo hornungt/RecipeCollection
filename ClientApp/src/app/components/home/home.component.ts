@@ -96,5 +96,15 @@ export class HomeComponent {
     dialogConfig.autoFocus = true;
     const dialogRef = this.matDialog.open(UploadDialogComponent, dialogConfig);
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        let recipe = result["recipe"];
+        let file = result["file"];
+        this.service.uploadLocalRecipe(recipe, file).subscribe(r => {
+          this.search("") // refresh the results
+        }, error => console.error(error));
+      }
+    });
+
   }
 }

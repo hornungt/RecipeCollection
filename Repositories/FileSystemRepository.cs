@@ -1,4 +1,5 @@
-﻿using RecipeApp.Abstract.Managers;
+﻿using Microsoft.AspNetCore.Http;
+using RecipeApp.Abstract.Repositories;
 using RecipeApp.Models;
 using System;
 using System.Diagnostics;
@@ -6,12 +7,12 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace RecipeApp.Managers
+namespace RecipeApp.Repositories
 {
-    public class FileSystemManager : IFileSystemManager
+    public class FileSystemRepository : IFileSystemRepository
     {
 
-        public FileSystemManager()
+        public FileSystemRepository()
         {
 
         }
@@ -46,6 +47,42 @@ namespace RecipeApp.Managers
                 Console.WriteLine(e.Message);
                 throw e;
             }
+        }
+
+        public async Task<Recipe> SaveExistingPDF(Recipe recipe, IFormFile file)
+        {
+            try
+            {
+                var date = DateTime.Now;
+                var dir = Directory.GetCurrentDirectory();
+                var destination = Path.Combine(dir, "pdfs", $"{date:yyy}", $"{date:MM}", $"{date:dd}");
+                Directory.CreateDirectory(destination);
+                var pdfDestination = Path.Combine(destination, recipe.Name + ".pdf");
+
+                using (var stream = new FileStream(pdfDestination, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                recipe.Path = pdfDestination;
+
+                return recipe;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw e;
+            }
+        }
+
+        public string RenamePDF(string oldPath, string newName)
+        {
+            var path = oldPath.Remove(oldPath.LastIndexOf("\\"));
+            var newFileName = newName + ".pdf";
+            var newPath = Path.Combine(path, newFileName);
+
+            File.Move(oldPath, newPath);
+
+            return newPath;
         }
 
         public async Task<Stream> GetFile(string filePath)
