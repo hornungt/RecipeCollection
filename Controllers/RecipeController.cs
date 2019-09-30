@@ -44,13 +44,26 @@ namespace RecipeApp.Controllers
         [HttpGet("{*filePath}")]
         public async Task<IActionResult> GetFile(string filePath)
         {
-            var file = await _recipeManager.GetFile(filePath);
-            return File(file, "application/pdf");
+            try
+            {
+                var file = await _recipeManager.GetFile(filePath);
+                return File(file, "application/pdf");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return BadRequest();
+            }
+            
         }
 
         [HttpPost]
         public async Task<IActionResult> AddRecipe([FromBody] Recipe recipe)
         {
+            if (string.IsNullOrEmpty(recipe.Name))
+            {
+                return BadRequest();
+            }
             try
             {
                 await _recipeManager.GenerateRecipe(recipe);

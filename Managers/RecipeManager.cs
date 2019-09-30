@@ -121,7 +121,7 @@ namespace RecipeApp.Managers
                     {
                         Name = newRecipe.Name,
                         Path = _fileRepo.RenamePDF(oldRecipe.Path, newRecipe.Name),
-                        Url = newRecipe.Url, // this doesn't matter, neither 
+                        Url = newRecipe.Url,
                         Tags = newRecipe.Tags
                     };
                 }

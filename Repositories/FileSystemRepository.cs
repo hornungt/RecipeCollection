@@ -88,7 +88,7 @@ namespace RecipeApp.Repositories
         public async Task<Stream> GetFile(string filePath)
         {
             var isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-            var dir = Directory.GetCurrentDirectory().Replace('\\', '/'); // "C:/Users/tthor/source/repos/RecipeApp"
+            var dir = Directory.GetCurrentDirectory().Replace('\\', '/');
             if (filePath == null)
             {
                 throw new FileNotFoundException("No file path given");
